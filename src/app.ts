@@ -1,34 +1,22 @@
 import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
+import bodyParser from "body-parser";
+import indexRouter from "./routes/test";
+import productRouter from "./routes/product";
 
 const app = express();
 dotenv.config(); //Reads .env file and makes it accessible via process.env
 
-app.get("/test", (req: Request, res: Response, next: NextFunction) => {
-  res.send("hi");
-});
-app.get("/", (req: Request, res: Response, next: NextFunction) => {
-    res.send("Hello, World");
-  });
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+)
+app.use('/', indexRouter);
+app.use('/api', productRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running at ${process.env.PORT}`);
 });
 
-import { Pool } from "pg";
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: parseInt(process.env.DB_PORT || "5432")
-});
-
-const connectToDB = async () => {
-  try {
-    await pool.connect();
-  } catch (err) {
-    console.log(err);
-  }
-};
-connectToDB();
