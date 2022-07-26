@@ -13,40 +13,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../db"));
-class ProductController {
-    createProduct(req, res) {
+class CartController {
+    getCart(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { name, amount, price } = req.body;
-            const newPerson = yield db_1.default.query(`INSERT INTO product (name, amount, price) values ($1, $2, $3) RETURNING *`, [name, amount, price]);
-            res.json(newPerson.rows[0]);
+            const cart = req.session.cart || [];
+            res.send(cart);
         });
     }
-    getProduct(req, res) {
+    addProduct(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const id = req.params.id;
             const product = yield db_1.default.query('SELECT * FROM product where id = $1', [id]);
-            res.json(product.rows[0]);
-        });
-    }
-    getProducts(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const products = yield db_1.default.query('SELECT * FROM product');
-            res.json(products.rows);
-        });
-    }
-    updateProduct(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { id, name, amount, price } = req.body;
-            const product = yield db_1.default.query('UPDATE product set name = $1, amount = $2, price = $3 where id =$4 RETURNING *', [name, amount, price, id]);
-            res.json(product.rows[0]);
+            const cart = req.session.cart || [];
+            cart.push(product.rows[0]);
+            req.session.cart = cart;
+            res.json(cart);
         });
     }
     deleteProduct(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const id = req.params.id;
-            const product = yield db_1.default.query('DELETE FROM product where id = $1 RETURNING *', [id]);
-            res.json(product.rows[0]);
+            const id = parseInt(req.params.id);
+            let cart = req.session.cart || [];
+            req.session.cart = cart.filter((product) => product.id !== id);
+            res.json(req.session.cart);
         });
     }
 }
-exports.default = new ProductController;
+exports.default = new CartController;

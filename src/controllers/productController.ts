@@ -10,8 +10,8 @@ class ProductController {
 
     async getProduct(req: Request, res: Response) {
         const id = req.params.id;
-        const user = await db.query('SELECT * FROM product where id = $1', [id]);
-        res.json(user.rows[0]);
+        const product = await db.query('SELECT * FROM product where id = $1', [id]);
+        res.json(product.rows[0]);
     }
 
     async getProducts(req: Request, res: Response) {
