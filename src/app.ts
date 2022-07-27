@@ -11,14 +11,17 @@ declare module 'express-session' {
   }
 }
 
-const app = express();
 dotenv.config(); //Reads .env file and makes it accessible via process.env
+
+const app = express();
 
 app.use(express.json());
 
-app.use(session({secret: "Shh, its a secret!",
-resave: false,
-saveUninitialized: true}));
+app.use(session({
+  secret: String(process.env.SESSION_SECRET),
+  resave: false,
+  saveUninitialized: true
+}));
 
 app.use('/', indexRouter);
 app.use('/api', productRouter);
