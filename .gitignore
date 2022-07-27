@@ -1,2 +1,17 @@
-node_modules
+# Dependency directories
+node_modules/
+jspm_packages/
+
+
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+
+# dotenv environment variable files
 .env
+
+dist
