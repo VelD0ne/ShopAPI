@@ -1,6 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
-import bodyParser from "body-parser";
 import session from "express-session";
 import indexRouter from "./routes/test";
 import productRouter from "./routes/product";
@@ -15,12 +14,7 @@ declare module 'express-session' {
 const app = express();
 dotenv.config(); //Reads .env file and makes it accessible via process.env
 
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+app.use(express.json());
 
 app.use(session({secret: "Shh, its a secret!",
 resave: false,
