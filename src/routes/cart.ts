@@ -7,4 +7,4 @@ router.post('/cart/add/product/:id', cartController.addProduct);
 router.delete('/cart/delete/product/:id', cartController.deleteProduct);
 
 
-export default router;
+export { router as cartRouter };

@@ -8,4 +8,4 @@ router.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.json({text: "Hello, World", something: "Hehe"});
   });
 
-export default router;
+export { router as testRouter };

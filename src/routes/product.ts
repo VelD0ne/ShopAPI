@@ -10,4 +10,4 @@ router.delete('/product/:id', productController.deleteProduct);
 
 
 
-export default router;
+export { router as productRouter };

@@ -1,9 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import session from "express-session";
-import indexRouter from "./routes/test";
-import productRouter from "./routes/product";
-import cartRouter from "./routes/cart";
+import { router } from "./routes/index";
 
 declare module 'express-session' {
   export interface SessionData {
@@ -23,9 +21,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-app.use('/', indexRouter);
-app.use('/api', productRouter);
-app.use('/', cartRouter);
+app.use(router);
 
 const port = process.env.PORT || 3000;
 
