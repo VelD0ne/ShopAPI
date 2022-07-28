@@ -13,3 +13,5 @@ jspm_packages/
 
 # Converted from ts js files
 dist
+
+database.sql

@@ -4,15 +4,16 @@ dotenv.config(); //Reads .env file and makes it accessible via process.env
 import express, { NextFunction, Request, Response } from "express";
 import session from "../types";
 import { router } from "./routes/index";
-import { myDataSource } from "./appDataSource";
+import { myDataSource } from "./db/appDataSource";
 
 myDataSource
   .initialize()
   .then(() => {
     console.log("Data Source has been initialized!");
   })
-  .catch((err) => {
+  .catch((err: Error) => {
     console.error("Error during Data Source initialization:", err);
+    process.exit();
   });
 
 const app = express();

@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { myDataSource } from "../db/appDataSource";
+import { Product } from "../db/entity/product.entity"
 import db from "../db"
 
 
@@ -15,8 +17,10 @@ export async function getProduct(req: Request, res: Response) {
 }
 
 export async function getProducts(req: Request, res: Response) {
-    const products = await db.query('SELECT * FROM product');
-    res.json(products.rows);
+    // const products = await db.query('SELECT * FROM product');
+    // res.json(products.rows);
+    const products = await myDataSource.getRepository(Product).find()
+    res.json(products)
 }
 
 export async function updateProduct(req: Request, res: Response) {
