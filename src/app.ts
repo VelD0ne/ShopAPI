@@ -2,14 +2,8 @@ import dotenv from "dotenv";
 dotenv.config(); //Reads .env file and makes it accessible via process.env
 
 import express, { NextFunction, Request, Response } from "express";
-import session from "express-session";
+import session from "../types";
 import { router } from "./routes/index";
-
-declare module 'express-session' {
-  export interface SessionData {
-    cart: [];
-  }
-}
 
 const app = express();
 

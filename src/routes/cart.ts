@@ -3,8 +3,8 @@ import * as cartController from "../controllers/cartController";
 const router = Router();
 
 router.get('/cart', cartController.getCart);
-router.post('/cart/add/product/:id', cartController.addProduct);
-router.delete('/cart/delete/product/:id', cartController.deleteProduct);
+router.put('/cart/products/:id', cartController.addProduct);
+router.delete('/cart/products/:id', cartController.deleteProduct);
 
 
 export { router as cartRouter };
