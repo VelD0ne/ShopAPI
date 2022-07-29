@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
 import { myDataSource } from "../db/appDataSource";
-import { Product } from "../db/entity/product.entity"
-import db from "../db"
-
+import { Product } from "../db/entity/product.entity";
 
 export async function createProduct(req: Request, res: Response) {
-    const {name, amount, price} = req.body;
-    const newPerson = await db.query(`INSERT INTO product (name, amount, price) values ($1, $2, $3) RETURNING *`, [name, amount, price]);
-    res.json(newPerson.rows[0]);
+    const product = await myDataSource.getRepository(Product).create(req.body);
+    console.log(product);
+    const result = await myDataSource.getRepository(Product).save(product);
+    res.json(result);
 }
 
 export async function getProduct(req: Request, res: Response) {
-    const id = req.params.id;
-    const product = await db.query('SELECT * FROM product where id = $1', [id]);
-    res.json(product.rows[0]);
+    const product = await myDataSource.getRepository(Product).findOneBy({
+        id: parseInt(req.params.id),
+    });
+    res.json(product);
 }
 
 export async function getProducts(req: Request, res: Response) {
@@ -22,13 +22,15 @@ export async function getProducts(req: Request, res: Response) {
 }
 
 export async function updateProduct(req: Request, res: Response) {
-    const {id, name, amount, price} = req.body;
-    const product = await db.query('UPDATE product set name = $1, amount = $2, price = $3 where id =$4 RETURNING *', [name, amount, price, id])
-    res.json(product.rows[0]);
+    const product = await myDataSource.getRepository(Product).findOneBy({
+        id: parseInt(req.params.id),
+    });
+    myDataSource.getRepository(Product).merge(product, req.body);
+    const result = await myDataSource.getRepository(Product).save(product);
+    res.json(result);
 }
 export async function deleteProduct(req: Request, res: Response) {
-    const id = req.params.id;
-    const product = await db.query('DELETE FROM product where id = $1 RETURNING *', [id]);
-    res.json(product.rows[0]);
+    const products = await myDataSource.getRepository(Product).delete(req.params.id);
+    res.json(products)
 }
 

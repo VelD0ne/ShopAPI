@@ -31,6 +31,7 @@ export class DbCreation1659093284311 implements MigrationInterface {
                     {
                         name: "id",
                         type: "int",
+                        isGenerated: true,
                         isPrimary: true,
                     },
                     {
