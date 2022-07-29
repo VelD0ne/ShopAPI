@@ -1,9 +1,9 @@
 import { Entity, PrimaryColumn, ManyToMany, JoinTable } from "typeorm"
 import { Product } from "./product.entity";
 
-@Entity({ name: 'carts'})
+@Entity()
 export class Cart {
-    @PrimaryColumn()
+    @PrimaryColumn('uuid')
     uuid: string
 
     @ManyToMany(() => Product)

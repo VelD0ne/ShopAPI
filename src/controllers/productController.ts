@@ -17,9 +17,7 @@ export async function getProduct(req: Request, res: Response) {
 }
 
 export async function getProducts(req: Request, res: Response) {
-    // const products = await db.query('SELECT * FROM product');
-    // res.json(products.rows);
-    const products = await myDataSource.getRepository(Product).find()
+    const products = await myDataSource.getRepository(Product).find();
     res.json(products)
 }
 

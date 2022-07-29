@@ -1,4 +1,5 @@
-import { DataSource } from "typeorm"
+import { DataSource } from "typeorm";
+import { resolve } from "path";
 
 const myDataSource = new DataSource({
     type: "postgres",
@@ -7,8 +8,8 @@ const myDataSource = new DataSource({
     username: process.env.DB_USER || "postgres",
     password: process.env.DB_PASSWORD || "mypassword" ,
     database: process.env.DB_NAME || "animelist",
-    entities: ["entity/*.ts"],
-    migrations: ["migration/*.ts"],
+    entities: [resolve(__dirname, "./entity/*.ts")],
+    migrations: [resolve(__dirname, "./migration/*.ts")],
 })
 
 export { myDataSource };
