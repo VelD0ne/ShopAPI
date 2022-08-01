@@ -4,7 +4,6 @@ import { Product } from "../db/entity/product.entity";
 
 export async function createProduct(req: Request, res: Response) {
     const product = await myDataSource.getRepository(Product).create(req.body);
-    console.log(product);
     const result = await myDataSource.getRepository(Product).save(product);
     res.json(result);
 }

@@ -16,7 +16,7 @@ export class DbCreation1659093284311 implements MigrationInterface {
                 columns: [
                     {
                         name: "uuid",
-                        type: "uuid",
+                        type: "varchar",
                         isPrimary: true,
                     },
                 ],
@@ -53,17 +53,21 @@ export class DbCreation1659093284311 implements MigrationInterface {
 
         await queryRunner.createTable(
             new Table({
-                name: "cart_product",
+                name: "cart_products_product",
                 columns: [
+                    {
+                        name: "cartProductId",
+                        type: "integer",
+                        isPrimary: true,
+                        isGenerated: true
+                    },
                     {
                         name: "productId",
                         type: "integer",
-                        isPrimary: true,
                     },
                     {
                         name: "cartUuid",
-                        type: "uuid",
-                        isPrimary: true,
+                        type: "varchar",
                     },
                 ],
             }),
@@ -73,7 +77,7 @@ export class DbCreation1659093284311 implements MigrationInterface {
 
 
         await queryRunner.createForeignKey(
-            "cart_product",
+            "cart_products_product",
             new TableForeignKey({
                 columnNames: ["productId"],
                 referencedColumnNames: ["id"],
@@ -83,7 +87,7 @@ export class DbCreation1659093284311 implements MigrationInterface {
         );
 
         await queryRunner.createForeignKey(
-            "cart_product",
+            "cart_products_product",
             new TableForeignKey({
                 columnNames: ["cartUuid"],
                 referencedColumnNames: ["uuid"],
@@ -94,16 +98,16 @@ export class DbCreation1659093284311 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        const table = await queryRunner.getTable("cart_product");
+        const table = await queryRunner.getTable("cart_products_product");
         const productForeignKey = table.foreignKeys.find(
             (fk) => fk.columnNames.indexOf("productId") !== -1,
         );
         const cartForeignKey = table.foreignKeys.find(
             (fk) => fk.columnNames.indexOf("cartUuid") !== -1,
         );
-        await queryRunner.dropForeignKey("cart_product", productForeignKey);
-        await queryRunner.dropForeignKey("cart_product", cartForeignKey);
-        await queryRunner.dropTable("cart_product");
+        await queryRunner.dropForeignKey("cart_products_product", productForeignKey);
+        await queryRunner.dropForeignKey("cart_products_product", cartForeignKey);
+        await queryRunner.dropTable("cart_products_product");
         await queryRunner.dropTable("cart");
         await queryRunner.dropTable("product");
 

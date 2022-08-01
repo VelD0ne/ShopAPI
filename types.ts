@@ -7,3 +7,4 @@ declare module 'express-session' {
 }
 
 export = session;
+

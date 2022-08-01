@@ -3,7 +3,7 @@ import { Product } from "./product.entity";
 
 @Entity()
 export class Cart {
-    @PrimaryColumn('uuid')
+    @PrimaryColumn()
     uuid: string
 
     @ManyToMany(() => Product)

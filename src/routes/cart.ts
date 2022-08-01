@@ -2,6 +2,7 @@ import Router from "express";
 import * as cartController from "../controllers/cartController";
 const router = Router();
 
+router.all('/cart*', cartController.initializeCart)
 router.get('/cart', cartController.getCart);
 router.put('/cart/products/:id', cartController.addProduct);
 router.delete('/cart/products/:id', cartController.deleteProduct);
