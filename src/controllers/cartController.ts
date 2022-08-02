@@ -1,65 +1,46 @@
-import { Request, Response, NextFunction } from "express";
-import { uniqWith, isEqual } from "lodash";
-import { myDataSource } from "../db/appDataSource";
-import { Product } from "../db/entity/product.entity";
+import { Request, Response } from "express";
+import { uniqBy } from "lodash";
+import {myDataSource} from "../db/appDataSource"
+import { productRepository } from "../db/repository/product";
+import { cartRepository } from "../db/repository/cart";
 import { Cart } from "../db/entity/cart.entity";
 
-export async function initializeCart(req: Request, res: Response, next: NextFunction) {
-    const cart = await myDataSource.getRepository(Cart).findOneBy({
-        uuid: req.sessionID,
-    })
-    if(!cart) {
+let cache: { [sessionId: string]: Cart } = {};
+
+export async function getCart(sessionId: string): Promise<Cart> {
+    if (!(sessionId in cache)) {
         const cart = await myDataSource.getRepository(Cart).create({
-            uuid: req.sessionID,
+            uuid: sessionId,
         });
-        const result = await myDataSource.getRepository(Cart).save(cart);
+        cart.products = [];
+
+        cache[sessionId] = await cartRepository.save(cart);
     }
-    next();
+
+    return cache[sessionId];
 }
 
-export async function getCart(req: Request, res: Response) {
-
-    const cart = await myDataSource.getRepository(Cart).findOne({
-        where: {
-            uuid: req.sessionID,
-        },
-        relations: {
-            products: true,
-        },
-    })
+export async function getProducts(req: Request, res: Response) {
+    const cart = await getCart(req.sessionID);
     res.json(cart.products);
 }
 
 export async function addProduct(req: Request, res: Response) {
-    const cart = await myDataSource.getRepository(Cart).findOne({
-        where: {
-            uuid: req.sessionID,
-        },
-        relations: {
-            products: true,
-        },
-    })
-    const product = await myDataSource.getRepository(Product).findOneBy({
+    const cart = await getCart(req.sessionID);
+    const product = await productRepository.findOneBy({
         id: parseInt(req.params.id),
     });
     cart.products.push(product);
-    cart.products = uniqWith(cart.products, isEqual);
-    const result = await myDataSource.getRepository(Cart).save(cart);
+    cart.products = uniqBy(cart.products, "id");
+    const result = await cartRepository.save(cart);
     res.json(result.products);
 }
 
 export async function deleteProduct(req: Request, res: Response) {
-    const cart = await myDataSource.getRepository(Cart).findOne({
-        where: {
-            uuid: req.sessionID,
-        },
-        relations: {
-            products: true,
-        },
-    })
-    cart.products = cart.products.filter(product => product.id != parseInt(req.params.id));
-    const result = await myDataSource.getRepository(Cart).save(cart);
+    const cart = await getCart(req.sessionID);
+    cart.products = cart.products.filter(
+        (product) => product.id != parseInt(req.params.id)
+    );
+    const result = await cartRepository.save(cart);
     res.json(result.products);
 }
-
-
