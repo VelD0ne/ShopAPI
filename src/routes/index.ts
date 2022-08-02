@@ -5,7 +5,7 @@ import { cartRouter } from "./cart";
 var router = express.Router();
 
 router.use('/', testRouter);
-router.use('/api', productRouter);
+router.use('/', productRouter);
 router.use('/', cartRouter);
 
 export { router };

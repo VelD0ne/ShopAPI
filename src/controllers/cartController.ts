@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { uniqBy } from "lodash";
-import {myDataSource} from "../db/appDataSource"
 import { productRepository } from "../db/repository/product";
 import { cartRepository } from "../db/repository/cart";
 import { Cart } from "../db/entity/cart.entity";
@@ -9,7 +8,7 @@ let cache: { [sessionId: string]: Cart } = {};
 
 export async function getCart(sessionId: string): Promise<Cart> {
     if (!(sessionId in cache)) {
-        const cart = await myDataSource.getRepository(Cart).create({
+        const cart = await cartRepository.create({
             uuid: sessionId,
         });
         cart.products = [];
