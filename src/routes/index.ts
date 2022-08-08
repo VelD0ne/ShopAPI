@@ -4,8 +4,8 @@ import { productRouter } from "./product";
 import { cartRouter } from "./cart";
 var router = express.Router();
 
-router.use('/', testRouter);
-router.use('/', productRouter);
-router.use('/', cartRouter);
+router.use(testRouter);
+router.use(productRouter);
+router.use(cartRouter);
 
 export { router };

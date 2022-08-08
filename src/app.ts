@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
-dotenv.config(); //Reads .env file and makes it accessible via process.env
+dotenv.config();
 
 import express from "express";
 import session from "../types";
 import { router } from "./routes/index";
 import { myDataSource } from "./db/appDataSource";
 
-async function initializeComponents() {
+const start = async () => {
     await myDataSource
         .initialize()
         .then(() => {
@@ -14,7 +14,7 @@ async function initializeComponents() {
         })
         .catch((err: Error) => {
             console.error("Error during Data Source initialization:", err);
-            process.exit();
+            return;
         });
 
     const app = express();
@@ -38,4 +38,4 @@ async function initializeComponents() {
     });
 }
 
-initializeComponents();
+start();
