@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { uniqBy } from "lodash";
+import _, { uniqBy, remove } from "lodash";
 import { productRepository } from "../db/repository/product";
 import { cartRepository } from "../db/repository/cart";
 import { Cart } from "../db/entity/cart.entity";
+
 
 let cache: { [sessionId: string]: Cart } = {};
 
@@ -37,9 +38,8 @@ export async function addProduct(req: Request, res: Response) {
 
 export async function deleteProduct(req: Request, res: Response) {
     const cart = await getCart(req.sessionID);
-    cart.products = cart.products.filter(
-        (product) => product.id != parseInt(req.params.id)
-    );
+    const productIdToDelete = parseInt(req.params.id);
+    _.remove(cart.products, (product) => product.id != productIdToDelete);
     const result = await cartRepository.save(cart);
     res.json(result.products);
 }
