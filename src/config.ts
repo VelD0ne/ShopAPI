@@ -1,9 +1,9 @@
-import session from "../types";
+import session from '../types';
 
 const appSession = session({
-    secret: String(process.env.SESSION_SECRET),
-    resave: false,
-    saveUninitialized: true,
+  secret: String(process.env.SESSION_SECRET),
+  resave: false,
+  saveUninitialized: true,
 });
 
 const serverPort = process.env.PORT || 5000;
