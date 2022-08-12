@@ -1,47 +1,38 @@
 import { Request, Response } from 'express';
-import _, { uniqBy, remove } from 'lodash';
-import { productRepository } from '../db/repository/product';
+import _ from 'lodash';
+import { Cart_Product } from '../db/entity/cart_products_product.entity';
 import { cartRepository } from '../db/repository/cart';
-import { Cart } from '../db/entity/cart.entity';
-
-let cache: { [sessionId: string]: Cart } = {};
-
-export async function getCart(sessionId: string): Promise<Cart> {
-  if (!(sessionId in cache)) {
-    const cart = await cartRepository.create({
-      uuid: sessionId,
-    });
-    cart.products = [];
-
-    cache[sessionId] = await cartRepository.save(cart);
-  }
-
-  return cache[sessionId];
-}
+import { cartToProductRepository } from '../db/repository/cartToProduct';
+import { findProductById, getCart } from '../functions/index';
 
 export async function getProducts(req: Request, res: Response) {
   const cart = await getCart(req.sessionID);
-  res.json(cart.products);
+  res.json(cart.cartToProducts);
 }
 
 export async function addProduct(req: Request, res: Response) {
   const cart = await getCart(req.sessionID);
-  const product = await productRepository.findOneBy({
-    id: parseInt(req.params.id),
-  });
-  cart.products.push(product);
-  cart.products = uniqBy(cart.products, 'id');
+  const product = findProductById(parseInt(req.params.id), cart.cartToProducts);
+
+  if (product) {
+    product.productAmout += req.body.amount;
+  } else {
+    const cartToProduct = await cartToProductRepository.create({
+      productId: parseInt(req.params.id),
+      cartUuid: cart.uuid,
+      productAmout: req.body.amount,
+    });
+    cart.cartToProducts.push(cartToProduct);
+  }
   const result = await cartRepository.save(cart);
-  res.json(result.products);
+
+  res.json(result.cartToProducts);
 }
 
 export async function deleteProduct(req: Request, res: Response) {
   const cart = await getCart(req.sessionID);
   const productIdToDelete = parseInt(req.params.id);
-  _.remove(
-    cart.products,
-    (product) => product.id != productIdToDelete
-  );
+  _.remove(cart.cartToProducts, (product: Cart_Product) => product.productId == productIdToDelete);
   const result = await cartRepository.save(cart);
-  res.json(result.products);
+  res.json(result.cartToProducts);
 }
